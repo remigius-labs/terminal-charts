@@ -3,14 +3,14 @@
 `chart`: draw a time series as a braille line chart in the terminal. Numbers in, chart out. One file, no dependencies.
 
 ```
-curl -s 'https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1' | chart -s ETH -p 2495 -d -0.1
+curl -s 'https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1' | chart -s ETH -p 2496 -d -0.1
 ```
 ```
-     ⠴⠒⢲⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣰⢦⢀⣶⠀⠀⠀⠀⠀⠀⠀⠀⢀
-     ⠀⠀⠈⢧⡤⣄⣀⡀⠀⠀⠀⠀⢀⡟⠻⡄⠀⠀⠀⠀⢀⡶⠇⠉⠈⠉⠈⠳⣤⠤⠤⣤⠤⠶⠼⠉
-ETH  ⠀⠀⠀⠀⠀⠀⠉⠳⡄⣰⠻⠞⠉⠀⠀⠙⠦⠤⢤⠀⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-     ⠀⠀⠀⠀⠀⠀⠀⠀⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈⣷⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                           ⠒⢦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣠⣄⢀⣶⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀
+                           ⠀⠘⣆⣤⣀⠀⠀⠀⠀⠀⠀⢠⠟⢲⡀⠀⠀⠀⠀⢀⡶⠏⠁⠈⠛⠘⠲⣤⣄⣤⣀⣠⠤⠼⠉⠀
+  ETH       2,496   -0.1%  ⠀⠀⠀⠀⠈⠉⢧⡀⣸⢳⡞⠛⠀⠀⠳⢤⡤⣄⠀⡏⠀⠀⠀⠀⠀⠀⠀⠉⠀⠀⠀⠀⠀⠀⠀⠀
+                           ⠀⠀⠀⠀⠀⠀⠀⠓⠃⠀⠀⠀⠀⠀⠀⠀⠀⠸⣼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                           ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ```
 
 The example above is a snapshot of one day. `-s SYM -p PRICE -d PCT` prints the standard row: ticker, price, 24h change, same layout as every other chart in the terminal.
