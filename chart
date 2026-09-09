@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+# Copyright (c) 2026 remigius-labs. MIT License.
+"""chart: draw a time series as a braille line chart in the terminal.
+
+Usage: chart [options] < numbers
+  Input: one number per line, or comma/space separated, or a JSON array (of numbers or [x, y] pairs).
+  -t TITLE      label printed on the middle row (e.g. "BTC  78,758  -0.6%")
+  -r ROWS       height in text rows (default 5)
+  -c COLS       width in text columns (default 36)
+  --min V       fix the bottom of the scale     --max V   fix the top (default: fit the data, ≥1% band)
+  --band F      minimum half-range as a fraction of the mid value (default 0.01)
+  --labels      print first and last values on the right
+  --blocks      use ▁▂▃▄▅▆▇█ block bars (1 row) instead of braille lines
+Examples:
+  seq 1 50 | awk '{print sin($1/5)}' | chart -t "sine"
+  curl -s 'https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1' | chart -t ETH
+"""
+import json, re, sys
+
+BARS = "▁▂▃▄▅▆▇█"
+DOTS = {(0, 0): 0x01, (0, 1): 0x02, (0, 2): 0x04, (0, 3): 0x40, (1, 0): 0x08, (1, 1): 0x10, (1, 2): 0x20, (1, 3): 0x80}
+
+def die(msg): print(f"chart: {msg}", file=sys.stderr); sys.exit(1)
+
+def parse(text):
+    """Numbers from lines, CSV, or JSON (array / {prices:[[t,v],...]} / [[t,v],...])."""
+    text = text.strip()
+    if not text: die("no input")
+    if text[0] in "[{":
+        try: data = json.loads(text)
+        except ValueError as e: die(f"bad JSON: {e}")
+        if isinstance(data, dict):
+            for key in ("prices", "values", "data", "series", "y"):
+                if key in data: data = data[key]; break
+            else: data = next((v for v in data.values() if isinstance(v, list)), None)
+        if not isinstance(data, list): die("JSON has no list of numbers")
+        vals = [(x[-1] if isinstance(x, (list, tuple)) else x) for x in data]
+    else:
+        vals = re.findall(r"-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?", text)
+    try: vals = [float(v) for v in vals]
+    except (TypeError, ValueError): die("input has non-numeric values")
+    if len(vals) < 2: die("need at least 2 numbers (got %d)" % len(vals))
+    return vals
+
+def resample(vals, n):
+    """Fit `vals` to exactly n points: average down when there are more, interpolate when fewer."""
+    if len(vals) == n: return vals
+    if len(vals) < n:
+        out = []
+        for i in range(n):
+            pos = i * (len(vals) - 1) / (n - 1); j = int(pos); f = pos - j
+            out.append(vals[j] if j >= len(vals) - 1 else vals[j] * (1 - f) + vals[j + 1] * f)
+        return out
+    step = len(vals) / n
+    return [sum(vals[int(i * step):max(int(i * step) + 1, int((i + 1) * step))]) / len(vals[int(i * step):max(int(i * step) + 1, int((i + 1) * step))]) for i in range(n)]
+
+def scale(pts, vmin, vmax, band):
+    lo, hi = min(pts), max(pts); mid = (lo + hi) / 2
+    half = max(abs(mid) * band, (hi - lo) / 2 * 1.15)
+    top = vmax if vmax is not None else mid + half
+    bot = vmin if vmin is not None else mid - half
+    if top <= bot: top = bot + 1
+    return top, bot
+
+def braille(vals, rows, cols, vmin, vmax, band):
+    W, H = cols * 2, rows * 4
+    pts = resample(vals, W)
+    top, bot = scale(pts, vmin, vmax, band)
+    ys = [min(H - 1, max(0, int((top - v) / (top - bot) * (H - 1)))) for v in pts]
+    grid = [[0] * W for _ in range(H)]
+    for x in range(len(pts)):
+        y0, y1 = (ys[x - 1], ys[x]) if x else (ys[x], ys[x])
+        for y in range(min(y0, y1), max(y0, y1) + 1): grid[y][x] = 1
+    out = []
+    for r in range(rows):
+        line = ""
+        for c in range(cols):
+            v = 0
+            for (dx, dy), bit in DOTS.items():
+                if grid[r * 4 + dy][c * 2 + dx]: v |= bit
+            line += chr(0x2800 + v)
+        out.append(line)
+    return out
+
+def blocks(vals, cols, vmin, vmax, band):
+    pts = resample(vals, cols)
+    top, bot = scale(pts, vmin, vmax, band)
+    return ["".join(BARS[min(7, max(0, int((v - bot) / (top - bot) * 7.999)))] for v in pts)]
+
+def fmt(v): return f"{v:,.0f}" if abs(v) >= 100 else f"{v:,.2f}"
+
+def main():
+    a = sys.argv[1:]; title = ""; rows = 5; cols = 36; vmin = vmax = None; band = 0.01; labels = False; use_blocks = False
+    while a:
+        x = a.pop(0)
+        if x == "-t" and a: title = a.pop(0)
+        elif x == "-r" and a: rows = max(1, int(a.pop(0)))
+        elif x == "-c" and a: cols = max(4, int(a.pop(0)))
+        elif x == "--min" and a: vmin = float(a.pop(0))
+        elif x == "--max" and a: vmax = float(a.pop(0))
+        elif x == "--band" and a: band = float(a.pop(0))
+        elif x == "--labels": labels = True
+        elif x == "--blocks": use_blocks = True
+        elif x in ("-h", "--help"): print(__doc__); sys.exit(0)
+        else: die(f"unknown option {x}\n\n{__doc__}")
+    if sys.stdin.isatty(): print(__doc__); sys.exit(1)
+    vals = parse(sys.stdin.read())
+    lines = blocks(vals, cols, vmin, vmax, band) if use_blocks else braille(vals, rows, cols, vmin, vmax, band)
+    mid = len(lines) // 2
+    pad = " " * (len(title) + 2) if title else ""
+    for i, line in enumerate(lines):
+        left = f"{title}  " if (title and i == mid) else pad
+        right = ""
+        if labels and i == 0: right = f"  {fmt(vals[0])} → {fmt(vals[-1])}"
+        print(f"{left}{line}{right}")
+
+if __name__ == "__main__": main()
