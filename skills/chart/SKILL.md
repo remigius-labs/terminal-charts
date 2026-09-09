@@ -11,10 +11,10 @@ description: Use when a user asks how something moved, trended, or changed over 
 
 1. Get the numbers (API, file, git log, whatever). Oldest first.
 2. Pipe them in. Any of these work: one per line, comma-separated, a JSON array, `[x, y]` pairs, or a raw CoinGecko / DefiLlama JSON response.
-3. Title on the middle row: `NAME  price  ±x.x%`, two spaces between. Price with two decimals under 100, whole numbers above. Change from the source's 24h field if it has one (CoinGecko `usd_24h_change`), else last vs first point. Keep it to that.
+3. Label with `-s SYM -p PRICE -d PCT`. This prints the standard row (`  LINK      12.53   -2.0%`) so every chart in the terminal lines up the same way. Use the source's 24h change if it has one (CoinGecko `usd_24h_change`); omit `-p`/`-d` to let the tool use the last point and last-vs-first.
 
 ```
-curl -s '<coingecko market_chart url>' | chart -t "ETH  2,496  +0.1%"
+curl -s '<coingecko market_chart url>' | chart -s ETH -p 2496.18 -d 0.07
 git log --format=%ad --date=short | sort | uniq -c | awk '{print $1}' | chart -t "commits/day" -r 3
 ```
 

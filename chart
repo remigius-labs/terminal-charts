@@ -4,7 +4,9 @@
 
 Usage: chart [options] < numbers
   Input: one number per line, or comma/space separated, or a JSON array (of numbers or [x, y] pairs).
-  -t TITLE      label printed on the middle row (e.g. "BTC  78,758  -0.6%")
+  -t TITLE      label printed on the middle row (free text)
+  -s SYM -p PRICE -d PCT   build the label the standard way instead: `SYM      78,758   -0.6%`
+                (ticker padded, price right-aligned, 2 decimals under 100, change +x.x%)
   -r ROWS       height in text rows (default 5)
   -c COLS       width in text columns (default 36)
   --min V       fix the bottom of the scale     --max V   fix the top (default: fit the data, ≥1% band)
@@ -91,9 +93,13 @@ def fmt(v): return f"{v:,.0f}" if abs(v) >= 100 else f"{v:,.2f}"
 
 def main():
     a = sys.argv[1:]; title = ""; rows = 5; cols = 36; vmin = vmax = None; band = 0.01; labels = False; use_blocks = False
+    sym = price = pct = None
     while a:
         x = a.pop(0)
         if x == "-t" and a: title = a.pop(0)
+        elif x == "-s" and a: sym = a.pop(0)
+        elif x == "-p" and a: price = float(a.pop(0).replace(",", ""))
+        elif x == "-d" and a: pct = float(a.pop(0).replace("%", "").replace("+", ""))
         elif x == "-r" and a: rows = max(1, int(a.pop(0)))
         elif x == "-c" and a: cols = max(4, int(a.pop(0)))
         elif x == "--min" and a: vmin = float(a.pop(0))
@@ -105,6 +111,11 @@ def main():
         else: die(f"unknown option {x}\n\n{__doc__}")
     if sys.stdin.isatty(): print(__doc__); sys.exit(1)
     vals = parse(sys.stdin.read())
+    if sym is not None:
+        if price is None: price = vals[-1]
+        if pct is None: pct = (vals[-1] / vals[0] - 1) * 100 if vals[0] else 0.0
+        shown = f"{price:,.2f}" if abs(price) < 100 else f"{price:,.0f}"
+        title = f"  {sym:<5s}{shown:>10s}  {pct:+5.1f}%"
     lines = blocks(vals, cols, vmin, vmax, band) if use_blocks else braille(vals, rows, cols, vmin, vmax, band)
     mid = len(lines) // 2
     pad = " " * (len(title) + 2) if title else ""
