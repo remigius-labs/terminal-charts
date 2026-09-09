@@ -1,6 +1,6 @@
-# chart
+# Terminal Charts
 
-Draw a time series as a braille line chart in the terminal. Numbers in, chart out. One file, no dependencies.
+`chart`: draw a time series as a braille line chart in the terminal. Numbers in, chart out. One file, no dependencies.
 
 ```
 curl -s 'https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1' | chart -t ETH
@@ -16,7 +16,7 @@ ETH  ⠀⠀⠀⠀⠀⠀⠉⠳⡄⣰⠻⠞⠉⠀⠀⠙⠦⠤⢤⠀⡏⠀⠀⠀⠀
 ## Install
 
 ```
-curl -fsSL https://raw.githubusercontent.com/remigius-labs/chart/master/chart -o ~/.local/bin/chart && chmod +x ~/.local/bin/chart
+curl -fsSL https://raw.githubusercontent.com/remigius-labs/terminal-charts/master/chart -o ~/.local/bin/chart && chmod +x ~/.local/bin/chart
 ```
 
 Python 3, nothing else.
@@ -42,7 +42,7 @@ Anything with numbers in it: one per line, comma or space separated, a JSON arra
 
 ## For agents
 
-`skills/chart/SKILL.md` teaches an agent to draw a series instead of describing it. Install with `npx skills add remigius-labs/chart` or symlink the folder into `~/.claude/skills/`.
+`skills/chart/SKILL.md` teaches an agent to draw a series instead of describing it. Install with `npx skills add remigius-labs/terminal-charts` or symlink the folder into `~/.claude/skills/`.
 
 ## License
 

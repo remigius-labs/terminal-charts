@@ -63,7 +63,11 @@ def resample(vals, n):
             out.append(vals[j] if j >= len(vals) - 1 else vals[j] * (1 - f) + vals[j + 1] * f)
         return out
     step = len(vals) / n
-    return [sum(vals[int(i * step):max(int(i * step) + 1, int((i + 1) * step))]) / len(vals[int(i * step):max(int(i * step) + 1, int((i + 1) * step))]) for i in range(n)]
+    out = []
+    for i in range(n):
+        seg = vals[int(i * step):max(int(i * step) + 1, int((i + 1) * step))]
+        out.append(sum(seg) / len(seg))
+    return out
 
 def scale(pts, vmin, vmax, band):
     lo, hi = min(pts), max(pts); mid = (lo + hi) / 2
