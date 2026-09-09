@@ -11,7 +11,7 @@ description: Use when a user asks how something moved, trended, or changed over 
 
 1. Get the numbers (API, file, git log, whatever). Oldest first.
 2. Pipe them in. Any of these work: one per line, comma-separated, a JSON array, `[x, y]` pairs, or a raw CoinGecko / DefiLlama JSON response.
-3. Title on the middle row: name, latest value, change. Keep it to that.
+3. Title on the middle row: `NAME  price  ±x.x%`, two spaces between. Price with two decimals under 100, whole numbers above. Change from the source's 24h field if it has one (CoinGecko `usd_24h_change`), else last vs first point. Keep it to that.
 
 ```
 curl -s '<coingecko market_chart url>' | chart -t "ETH  2,496  +0.1%"
