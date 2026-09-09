@@ -1,0 +1,5 @@
+# Dense one-liner style is deliberate for this single-file tool; a CLI prints.
+line-length = 130
+[lint]
+select = ["ALL"]
+ignore = ["E701", "E702", "T201", "ANN", "D", "FBT", "PLR0913", "PLR0917", "PLR2004", "S603", "S607", "PTH", "COM812", "ISC001", "DTZ011", "PLR0912", "PLW2901", "PLW0603", "PLR0915", "C901", "RUF005", "SIM105"]
