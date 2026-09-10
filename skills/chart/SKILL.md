@@ -15,7 +15,7 @@ Check `command -v chart`. If it is missing, copy the `chart` file that sits next
 install -m 755 <skill-dir>/chart ~/.local/bin/chart
 ```
 
-Or fetch it: `curl -fsSL https://raw.githubusercontent.com/remigius-labs/terminal-charts/master/chart -o ~/.local/bin/chart && chmod +x ~/.local/bin/chart`
+Or fetch it from the repo and read it before making it executable: `curl -fsSL https://raw.githubusercontent.com/remigius-labs/terminal-charts/master/chart -o ~/.local/bin/chart`, then `less ~/.local/bin/chart`, then `chmod +x ~/.local/bin/chart`. Ask the user before installing anything.
 
 Python 3 is the only requirement. If `~/.local/bin` is not on PATH, use the full path.
 

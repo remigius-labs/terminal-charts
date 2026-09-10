@@ -17,11 +17,27 @@ The example above is a snapshot of one day. `-s SYM -p PRICE -d PCT` prints the 
 
 ## Install
 
+Everything is in this repo. Two files matter: `chart` (the tool, one Python file) and `skills/chart/SKILL.md` (teaches a coding agent to use it). Nothing phones home; `chart` only reads stdin and prints.
+
+**The tool**
+
 ```
-curl -fsSL https://raw.githubusercontent.com/remigius-labs/terminal-charts/master/chart -o ~/.local/bin/chart && chmod +x ~/.local/bin/chart
+git clone https://github.com/remigius-labs/terminal-charts
+less terminal-charts/chart                      # read it, it is ~130 lines
+install -m 755 terminal-charts/chart ~/.local/bin/chart
 ```
 
-Python 3, nothing else.
+Needs Python 3, no packages. `~/.local/bin` must be on your PATH.
+
+**The Claude Code skill**
+
+```
+ln -s "$PWD/terminal-charts/skills/chart" ~/.claude/skills/chart
+```
+
+Or copy the folder instead of linking. Claude Code picks it up on the next session. The skill folder also carries its own copy of `chart`, so an agent that finds the skill but not the tool can install it from there.
+
+Other agents (Codex, Cursor, OpenCode) read the same `SKILL.md`; put the folder wherever they load skills from.
 
 ## Input
 
@@ -44,7 +60,7 @@ Anything with numbers in it: one per line, comma or space separated, a JSON arra
 
 ## For agents
 
-`skills/chart/SKILL.md` teaches an agent to draw a series instead of describing it, and carries a copy of `chart` so the skill installs its own tool on first use. `npx skills add remigius-labs/terminal-charts`, or symlink the folder into `~/.claude/skills/`.
+`skills/chart/SKILL.md` teaches an agent to draw a series instead of describing it: when to reach for the tool, which flags, how to read the picture honestly. Install as above.
 
 ## License
 
