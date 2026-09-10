@@ -27,6 +27,7 @@ git log --format=%ad --date=short | sort | uniq -c | awk '{print $1}' | chart -t
 - `--labels` first → last value on the right, when the title has no numbers.
 - `--min/--max` to put several charts on one scale so they can be compared by eye.
 - `--blocks` one-row bars, only when height is not available.
+- `--flat` when the chart is going to X, Telegram, or anywhere with a proportional font: label on its own line, rows unpadded, nothing depends on spaces.
 
 ## Reading the picture honestly
 
