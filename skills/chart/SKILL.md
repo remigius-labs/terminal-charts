@@ -5,7 +5,22 @@ description: Use when a user asks how something moved, trended, or changed over 
 
 # chart
 
-`chart` (on PATH) turns numbers on stdin into a braille line chart. Draw the series instead of describing it. Do not hand-write sparklines with block characters; use the tool so every chart has the same resolution, scale rules and look.
+`chart` turns numbers on stdin into a braille line chart.
+
+## Setup (first use only)
+
+Check `command -v chart`. If it is missing, install the single file that ships next to this skill:
+
+```
+install -m 755 "$(dirname "$SKILL_PATH")/chart" ~/.local/bin/chart 2>/dev/null \
+  || curl -fsSL https://raw.githubusercontent.com/remigius-labs/terminal-charts/master/chart -o ~/.local/bin/chart && chmod +x ~/.local/bin/chart
+```
+
+Python 3 is the only requirement. If `~/.local/bin` is not on PATH, use the full path.
+
+## Drawing
+
+Draw the series instead of describing it. Do not hand-write sparklines with block characters; use the tool so every chart has the same resolution, scale rules and look.
 
 ## Use
 

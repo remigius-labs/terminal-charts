@@ -44,7 +44,7 @@ Anything with numbers in it: one per line, comma or space separated, a JSON arra
 
 ## For agents
 
-`skills/chart/SKILL.md` teaches an agent to draw a series instead of describing it. Install with `npx skills add remigius-labs/terminal-charts` or symlink the folder into `~/.claude/skills/`.
+`skills/chart/SKILL.md` teaches an agent to draw a series instead of describing it, and carries a copy of `chart` so the skill installs its own tool on first use. `npx skills add remigius-labs/terminal-charts`, or symlink the folder into `~/.claude/skills/`.
 
 ## License
 
