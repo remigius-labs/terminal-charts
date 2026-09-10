@@ -9,12 +9,13 @@ description: Use when a user asks how something moved, trended, or changed over 
 
 ## Setup (first use only)
 
-Check `command -v chart`. If it is missing, install the single file that ships next to this skill:
+Check `command -v chart`. If it is missing, copy the `chart` file that sits next to this SKILL.md (the skill's base directory, shown when the skill loads) onto PATH:
 
 ```
-install -m 755 "$(dirname "$SKILL_PATH")/chart" ~/.local/bin/chart 2>/dev/null \
-  || curl -fsSL https://raw.githubusercontent.com/remigius-labs/terminal-charts/master/chart -o ~/.local/bin/chart && chmod +x ~/.local/bin/chart
+install -m 755 <skill-dir>/chart ~/.local/bin/chart
 ```
+
+Or fetch it: `curl -fsSL https://raw.githubusercontent.com/remigius-labs/terminal-charts/master/chart -o ~/.local/bin/chart && chmod +x ~/.local/bin/chart`
 
 Python 3 is the only requirement. If `~/.local/bin` is not on PATH, use the full path.
 
